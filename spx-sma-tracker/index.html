@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S&P 500 Tracker</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header>
+        <h1>S&P 500 Tracker</h1>
+    </header>
+    <main>
+        <section id="chart-container">
+            <canvas id="spxChart"></canvas>
+        </section>
+        <section id="data-table">
+            <h2>Daily Values</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>SPX Value</th>
+                        <th>SMA200</th>
+                        <th>Signal</th>
+                    </tr>
+                </thead>
+                <tbody id="data-body">
+                    <!-- Data will be populated here -->
+                </tbody>
+            </table>
+        </section>
+        <section id="alerts">
+            <h2>Alerts</h2>
+            <div id="alert-messages">
+                <!-- Alerts will be displayed here -->
+            </div>
+        </section>
+    </main>
+    <script src="js/api.js"></script>
+    <script src="js/calculations.js"></script>
+    <script src="js/chart.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
