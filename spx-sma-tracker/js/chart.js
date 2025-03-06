@@ -1,4 +1,5 @@
-// This file handles the rendering of the graphic chart that displays the S&P 500 values and the 200-day simple moving average (SMA200).
+// Register the zoom plugin
+Chart.register(window.ChartZoom);
 
 const ctx = document.getElementById('spxChart').getContext('2d');
 let spxChart;
@@ -18,17 +19,26 @@ function renderChart(spxData, smaData) {
                     data: spxData.map(data => data.value),
                     borderColor: 'blue',
                     fill: false,
+                    pointRadius: 0,
+                    borderWidth: 1,
                 },
                 {
                     label: 'SMA 200',
                     data: smaData,
                     borderColor: 'red',
                     fill: false,
+                    pointRadius: 0,
+                    borderWidth: 1,
                 }
             ]
         },
         options: {
             responsive: true,
+            interaction: {
+                mode: 'nearest',
+                intersect: false,
+                axis: 'x'
+            },
             scales: {
                 x: {
                     type: 'time',
@@ -41,12 +51,29 @@ function renderChart(spxData, smaData) {
                 }
             },
             plugins: {
-                legend: {
-                    display: true,
-                },
-                tooltip: {
-                    mode: 'index',
-                    intersect: false,
+                zoom: {
+                    limits: {
+                        y: {min: 'original', max: 'original'}
+                    },
+                    pan: {
+                        enabled: true,
+                        mode: 'xy'
+                    },
+                    zoom: {
+                        wheel: {
+                            enabled: true,
+                        },
+                        pinch: {
+                            enabled: true
+                        },
+                        mode: 'xy',
+                        drag: {
+                            enabled: true,
+                            borderColor: 'rgb(54, 162, 235)',
+                            borderWidth: 1,
+                            backgroundColor: 'rgba(54, 162, 235, 0.3)'
+                        }
+                    }
                 }
             }
         }

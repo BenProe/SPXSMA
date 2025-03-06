@@ -1,45 +1,79 @@
-// This file serves as the main entry point for the application. It initializes the app, sets up event listeners, and coordinates the fetching of data, calculations, and chart rendering.
-
-document.addEventListener('DOMContentLoaded', () => {
-    const chartContainer = document.getElementById('chart');
-    const tableContainer = document.getElementById('data-table');
+function createChart(container, data, smaData) {
+    const ctx = document.getElementById('spxChart').getContext('2d');
     
-    // Initialize the application
-    function init() {
-        fetchData();
-    }
+    const chartData = {
+        labels: data.map(d => d.date.toLocaleDateString()),
+        datasets: [
+            {
+                label: 'S&P 500',
+                data: data.map(d => d.price),
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+            },
+            {
+                label: 'SMA200',
+                data: smaData.map(d => d?.value),
+                borderColor: 'rgb(255, 99, 132)',
+                tension: 0.1
+            }
+        ]
+    };
 
-    // Fetch S&P 500 data
-    async function fetchData() {
-        try {
-            const data = await fetchS&P500Data();
-            const smaData = calculateSMA(data, 200);
-            renderChart(data, smaData);
-            renderTable(data, smaData);
-            checkAlerts(data, smaData);
-        } catch (error) {
-            console.error('Error fetching data:', error);
+    new Chart(ctx, {
+        type: 'line',
+        data: chartData,
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'S&P 500 vs SMA200'
+                }
+            },
+            scales: {
+                x: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Date'
+                    }
+                },
+                y: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Value'
+                    }
+                }
+            }
         }
-    }
+    });
+}
 
-    // Render the chart
-    function renderChart(data, smaData) {
-        // Call the chart rendering function from chart.js
-        createChart(chartContainer, data, smaData);
-    }
+document.addEventListener('DOMContentLoaded', init);
 
-    // Render the data table
-    function renderTable(data, smaData) {
-        // Call the table rendering function from calculations.js
-        createTable(tableContainer, data, smaData);
-    }
-
-    // Check for buy/sell alerts
-    function checkAlerts(data, smaData) {
-        // Call the alert checking function from calculations.js
+async function init() {
+    try {
+        // Fetch data
+        const data = await fetchSPXData();
+        
+        // Calculate SMA200
+        const smaData = calculateSMA(data, 200);
+        
+        // Create chart
+        createChart(document.getElementById('spxChart'), data, smaData);
+        
+        // Update table
+        createTable(document.getElementById('data-table'), data, smaData);
+        
+        // Generate alerts
         generateAlerts(data, smaData);
+        
+    } catch (error) {
+        console.error('Error initializing app:', error);
+        document.getElementById('data-body').innerHTML = '<tr><td colspan="4">Error loading data. Please try again later.</td></tr>';
     }
+}
 
-    // Start the application
-    init();
-});
+// Check for new data every 5 minutes
+setInterval(init, 5 * 60 * 1000);
