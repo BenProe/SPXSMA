@@ -95,3 +95,15 @@ th {
     border: 1px solid #f5c6cb;
     color: #721c24;
 }
+
+#chart-container {
+    position: relative;
+    height: 60vh;
+    width: 100%;
+    margin: 20px 0;
+}
+
+canvas {
+    width: 100% !important;
+    height: 100% !important;
+}

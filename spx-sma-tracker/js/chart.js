@@ -1,5 +1,5 @@
 // Register the zoom plugin
-Chart.register(window.ChartZoom);
+Chart.register(ChartZoom);
 
 const ctx = document.getElementById('spxChart').getContext('2d');
 let spxChart;
@@ -12,11 +12,13 @@ function renderChart(spxData, smaData) {
     spxChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: spxData.map(data => data.date),
             datasets: [
                 {
                     label: 'S&P 500',
-                    data: spxData.map(data => data.price), // Changed from value to price
+                    data: spxData.filter(data => data.date && !isNaN(data.price)).map(data => ({
+                        x: data.date,
+                        y: data.price
+                    })),
                     borderColor: 'blue',
                     fill: false,
                     pointRadius: 0,
@@ -24,7 +26,10 @@ function renderChart(spxData, smaData) {
                 },
                 {
                     label: 'SMA 200',
-                    data: smaData.map(data => data?.value), // Added map function
+                    data: smaData.filter(data => data && data.date && !isNaN(data.value)).map(data => ({
+                        x: data.date,
+                        y: data.value
+                    })),
                     borderColor: 'red',
                     fill: false,
                     pointRadius: 0,
@@ -35,31 +40,32 @@ function renderChart(spxData, smaData) {
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            interaction: {
-                mode: 'nearest',
-                intersect: false,
-                axis: 'x'
-            },
             scales: {
                 x: {
                     type: 'time',
                     time: {
                         unit: 'day',
                         displayFormats: {
-                            day: 'dd.MM.yyyy'
+                            day: 'DD.MM.YYYY'
                         }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Date'
                     }
                 },
                 y: {
-                    beginAtZero: false
+                    title: {
+                        display: true,
+                        text: 'Price'
+                    }
                 }
             },
             plugins: {
                 zoom: {
                     pan: {
                         enabled: true,
-                        mode: 'xy',
-                        modifierKey: 'ctrl',
+                        mode: 'xy'
                     },
                     zoom: {
                         wheel: {

@@ -54,24 +54,14 @@ document.addEventListener('DOMContentLoaded', init);
 
 async function init() {
     try {
-        // Fetch data
         const data = await fetchSPXData();
-        
-        // Calculate SMA200
         const smaData = calculateSMA(data, 200);
         
-        // Create chart
-        createChart(document.getElementById('spxChart'), data, smaData);
-        
-        // Update table
+        renderChart(data, smaData);
         createTable(document.getElementById('data-table'), data, smaData);
-        
-        // Generate alerts
         generateAlerts(data, smaData);
-        
     } catch (error) {
         console.error('Error initializing app:', error);
-        document.getElementById('data-body').innerHTML = '<tr><td colspan="4">Error loading data. Please try again later.</td></tr>';
     }
 }
 

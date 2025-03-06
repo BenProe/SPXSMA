@@ -4,7 +4,7 @@ async function fetchSPXData() {
     try {
         const symbol = 'SPY';  // SPY ETF tracks S&P 500
         const startDate = new Date();
-        startDate.setFullYear(startDate.getFullYear() - 10); // Get 5 years of data
+        startDate.setFullYear(startDate.getFullYear() - 5); // Get 5 years of data
         
         const response = await fetch(
             `https://api.tiingo.com/tiingo/daily/${symbol}/prices?startDate=${startDate.toISOString().split('T')[0]}`, 
@@ -29,7 +29,7 @@ async function fetchSPXData() {
         const formattedData = data.map(item => ({
             date: new Date(item.date),
             price: item.adjClose
-        }));
+        })).filter(item => item.date && !isNaN(item.price));
 
         // Debug log for formatted data
         console.log('Formatted Data:', formattedData.slice(0, 5));
