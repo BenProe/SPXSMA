@@ -16,7 +16,7 @@ function renderChart(spxData, smaData) {
             datasets: [
                 {
                     label: 'S&P 500',
-                    data: spxData.map(data => data.value),
+                    data: spxData.map(data => data.price), // Changed from value to price
                     borderColor: 'blue',
                     fill: false,
                     pointRadius: 0,
@@ -24,7 +24,7 @@ function renderChart(spxData, smaData) {
                 },
                 {
                     label: 'SMA 200',
-                    data: smaData,
+                    data: smaData.map(data => data?.value), // Added map function
                     borderColor: 'red',
                     fill: false,
                     pointRadius: 0,
@@ -34,6 +34,7 @@ function renderChart(spxData, smaData) {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             interaction: {
                 mode: 'nearest',
                 intersect: false,
@@ -43,7 +44,10 @@ function renderChart(spxData, smaData) {
                 x: {
                     type: 'time',
                     time: {
-                        unit: 'day'
+                        unit: 'day',
+                        displayFormats: {
+                            day: 'dd.MM.yyyy'
+                        }
                     }
                 },
                 y: {
@@ -52,12 +56,10 @@ function renderChart(spxData, smaData) {
             },
             plugins: {
                 zoom: {
-                    limits: {
-                        y: {min: 'original', max: 'original'}
-                    },
                     pan: {
                         enabled: true,
-                        mode: 'xy'
+                        mode: 'xy',
+                        modifierKey: 'ctrl',
                     },
                     zoom: {
                         wheel: {
@@ -69,8 +71,6 @@ function renderChart(spxData, smaData) {
                         mode: 'xy',
                         drag: {
                             enabled: true,
-                            borderColor: 'rgb(54, 162, 235)',
-                            borderWidth: 1,
                             backgroundColor: 'rgba(54, 162, 235, 0.3)'
                         }
                     }
